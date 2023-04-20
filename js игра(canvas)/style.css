@@ -1,0 +1,19 @@
+.player1, 
+.player2{
+    position: absolute;
+}
+
+
+
+/* .ball{
+    position: absolute;
+    border-radius: 50%;
+} */
+
+#game-field{
+    position: relative;
+
+    top: 150px;
+    left:250px;
+    border: 2px solid black;
+}
