@@ -1,8 +1,9 @@
 const canvas = document.querySelector("#game-field")
 const ctx = canvas.getContext("2d")
-canvas.width = 1024
-canvas.height = 560
+canvas.width = 1280
+canvas.height = 720
 let paused = false
+let paddleSpeed = 15
 
 class Player1 {
     constructor({x,y,colorObj,up,down}) {
@@ -23,20 +24,23 @@ class Player1 {
         this.up = up
         this.down = down 
 
+        this.speed = 0
+
     }
-    onClick(e) {
-        switch (e.code) {
-            case this.up:   
-                this.y = this.y - 10
-                break
-            case this.down:
-                this.y = this.y + 10
-                break
-        }
-        this.updateLocation()
-    }
+    // onClick(e) {
+    //     switch (e.code) {
+    //         case this.up:   
+    //             this.y = this.y - this.speed
+    //             break
+    //         case this.down:
+    //             this.y = this.y + this.speed
+    //             break
+    //     }
+    //     this.updateLocation()
+    // }
     updateLocation() {
         // console.log(this.x, this.y);
+        this.y = this.y + this.speed
         if (this.y > this.maxY) this.y = this.maxY
         if (this.y < this.minY) this.y = this.minY
         ctx.fillStyle = this.colorObj
@@ -45,6 +49,7 @@ class Player1 {
     beginPosition() {
         this.x = this.beginX
         this.y = this.beginY
+        this.speed = 0
         this.updateLocation()
     }
 }
@@ -52,19 +57,19 @@ class Player1 {
 
 class Ball {
     constructor() {
-        this.radius = 20,
+        this.radius = 15,
         this.x = 330,
         this.y = 400,
         this.maxX = canvas.width,
         this.maxY = canvas.height,
         this.minX = 0,
-        this.minY = 40,
+        this.minY = 30,
         this.colorObj = "orange",
-        this.velocity = -5
+        this.velocity = -10
         this.direction = 0
         this.isNegative = false
-        this.max = 2
-        this.min = -5
+        // this.max = 2
+        // this.min = -5
         this.coef = 0
         this.element = document.querySelector("#ball")
     }
@@ -82,6 +87,7 @@ class Ball {
 
     }
     moveBall() {
+        console.log(this.direction);
         this.x = this.x + this.velocity
         this.y = this.y + this.direction
         this.updateLocation()
@@ -92,11 +98,11 @@ class Ball {
         }
         this.isNegative = !this.isNegative
         if(this.isNegative){
-            this.direction = this.direction + this.coef/7
+            this.direction = this.direction + this.coef/5
             this.direction = -this.direction
         }
         else{
-            this.direction = this.direction - this.coef/7
+            this.direction = this.direction - this.coef/5
         }
     }
     beginPosition() {
@@ -104,6 +110,7 @@ class Ball {
         this.y = 400
         this.direction = 0
         this.coef = 0
+        this.velocity = -10
         this.updateLocation()
     }
 }
@@ -132,7 +139,13 @@ function collision(player, ball) {
     // если мяч и игрок соприкоснулись
     if (player.y <= ball.y && player.y + player.height >= ball.y- ball.radius *2 &&
         player.x - player.width <= ball.x && player.x >= ball.x - ball.radius *2) {
-        ball.velocity = -ball.velocity
+        if(ball.velocity >=0){
+            ball.velocity = ball.velocity + ball.coef/5
+        }
+        else{
+            ball.velocity = ball.velocity - ball.coef/5
+        }
+        ball.velocity = -ball.velocity 
         return true
     }
     return false
@@ -159,15 +172,45 @@ const start = () => {
 
 
     document.body.addEventListener("keydown", (e) => {
+
+        switch (e.code) {
+            case this.up:   
+                this.y = this.y - this.speed
+                break
+            case this.down:
+                this.y = this.y + this.speed
+                break
+        }
         if(e.code == "Escape"){
             paused  = !paused
         }
         else if(!paused){
-            player1.onClick(e)
-            player2.onClick(e)
+            if(e.code == "KeyW"){
+                player1.speed = -paddleSpeed
+            }
+            else if(e.code == "KeyS"){
+                player1.speed = paddleSpeed
+            }
+
+            if(e.code == "ArrowUp"){
+                player2.speed = -paddleSpeed
+            }
+            else if(e.code == "ArrowDown"){
+                player2.speed = paddleSpeed
+            }
         }
 
     })
+
+    document.addEventListener('keyup', function(e) {
+        if (e.code == "KeyW" || e.code == "KeyS") {
+            player1.speed = 0;
+        }
+      
+        if (e.code == "ArrowUp"|| e.code == "ArrowDown") {
+            player2.speed  = 0;
+        }
+      });
 
     requestAnimationFrame(update)
 }
