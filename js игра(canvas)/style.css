@@ -17,3 +17,9 @@
     left:250px;
     border: 2px solid black;
 }
+.gameScore{
+    position: relative;
+    font-size: 40px;
+    top:150px;
+    left:750px;
+}
