@@ -1,3 +1,9 @@
+body {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+}
+
 .player1, 
 .player2{
     position: absolute;
@@ -12,14 +18,14 @@
 
 #game-field{
     position: relative;
-
     top: 150px;
-    left:250px;
-    border: 2px solid black;
+    border: 2px solid rgb(255, 255, 255);
 }
 .gameScore{
     position: relative;
     font-size: 40px;
-    top:150px;
-    left:860px;
+    color: white;
+    left: 28.7%;
+    /* left: 50%; */
+    /* right: -50%; */
 }
