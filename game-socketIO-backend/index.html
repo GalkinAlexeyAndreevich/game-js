@@ -5,17 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
-    <!-- <script src="./client.js" type="module" defer></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script> -->
+    <script src="client.js" type="module" defer></script>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
 </head>
 <body>
     test
-    <script>
-        const ioClient = io.connect('http://localhost:8080')
-        ioClient.on('connection', socket => {
-            console.log("client connect");
-        })
-    </script>
-   
 </body>
 </html>

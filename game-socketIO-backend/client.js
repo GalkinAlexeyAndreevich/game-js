@@ -1,6 +1,7 @@
-import {io} from "socket.io-client"
-const ioClient = io.connect('http://localhost:8080')
-ioClient.on('connection', socket => {
-    console.log("client connect");
+import { io } from "https://cdn.socket.io/4.6.1/socket.io.esm.min.js";
+
+const socket = io("ws://localhost:8080");
+socket.on("sda",(args)=>{
+    console.log(args);
 })
-console.log(213);
+console.log(123123);

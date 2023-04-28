@@ -10,6 +10,7 @@
   "name": "game-socketio-backend",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "start  index.js",
     "dev": "nodemon index.js"
