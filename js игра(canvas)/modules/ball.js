@@ -1,5 +1,5 @@
 export default class Ball {
-  constructor({ canvas }) {
+  constructor(canvas) {
     this.radius = 15;
     this.x = 330;
     this.y = 400;
@@ -13,13 +13,32 @@ export default class Ball {
     this.isNegative = false;
     this.coef = 0;
     this.ctx = canvas.getContext("2d");
+
+    this.socket = -1
+    this.roomId = -1
+
+    this.idOwner = ""
   }
   updateLocation() {
     if (this.x > this.maxX) this.x = this.maxX;
     if (this.x < this.minX) this.x = this.minX;
     if (this.y > this.maxY) this.y = this.maxY;
     if (this.y < this.minY) this.y = this.minY;
-
+    if(this.idOwner == this.socket.id){
+      this.socket.emit("infoBallOnServer",{
+        x:this.x,
+        y:this.y,
+        roomId:this.roomId
+      })
+    }
+    else{
+      console.log("Пришлел мяч");
+      this.socket.on("infoBallOnClient",(data)=>{
+        console.log(data);
+        this.x = data.x
+        this.y = data.y
+      })
+  }
     this.ctx.beginPath();
     this.ctx.fillStyle = this.colorObj;
     this.ctx.arc(this.x, this.y - this.radius, this.radius, 0, Math.PI * 2);
@@ -28,6 +47,7 @@ export default class Ball {
   moveBall() {
     this.x = this.x + this.velocity;
     this.y = this.y + this.direction;
+
     this.updateLocation();
   }
   changeDirection() {

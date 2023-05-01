@@ -2,6 +2,7 @@ body {
     background-color: black;
     display: flex;
     justify-content: center;
+    color: white;
 }
 
 .player1, 
@@ -28,4 +29,11 @@ body {
     left: 28.7%;
     /* left: 50%; */
     /* right: -50%; */
+}
+/* .RoomSearch{
+    display: grid;
+    justify-content: center;
+} */
+.addRoom{
+    margin-top: 30px;
 }

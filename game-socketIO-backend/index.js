@@ -13,57 +13,64 @@ const io = new Server(http, {
   },
 });
 const port = process.env.PORT || 8080;
-const players = {
-  p1: "",
-  p2: "",
-};
-let count = 0;
+
+let rooms = []
 io.sockets.on("connection", async (socket) => {
-  let yourPlayer = 0;
-
-  if (!players.p1) {
-    players.p1 = socket.id;
-    yourPlayer = 1;
-  } else if (!players.p2) {
-    players.p2 = socket.id;
-    yourPlayer = 2;
-  } else {
-    yourPlayer = 0;
-  }
-
-  count = Object.values(players).filter(Boolean).length;
 
   await socket.join("room");
-  socket.emit("connectToGame", {
-    yourPlayer: yourPlayer,
-  });
+  io.to("room").emit("getRooms",rooms)
 
-  if (count == 2) {
-    console.log(count);
-    io.to("room").emit("startGame", players);
-  }
+  socket.on("checkInRoom",()=>{
+    for(let item of rooms){
+      if(item.id==socket.id){
+        socket.emit("answerOnCheck",false)
+      }
+    }
+  })
 
-  socket.on("infoCoordinationOnServer", (data) => {
-    io.to("room").emit("infoCoordinationOnClient", {
+  socket.on("addRoom",async()=>{
+      await socket.join(`room${rooms.length}`);
+      rooms.push({id:rooms.length,p1:socket.id,close:false})
+      io.to("room").emit("getRooms",rooms)    
+  })
+
+  socket.on("joinRoom",async(id)=>{
+    rooms[id].p2 = socket.id
+    rooms[id].close = true
+    await socket.join(`room${id}`);
+    io.to(`room${id}`).emit("startGame",rooms[id] );
+    io.to(`room`).emit("getRooms",rooms);
+  })
+
+  socket.on("infoPlayerOnServer", (data) => {
+    io.to(`room${data.roomId}`).emit("infoPlayerOnClient", {
       x: data.x,
       y: data.y,
       choose: data.numberPlayer
     });
   });
 
+  socket.on("infoBallOnServer",(data)=>{
+    io.to(`room${data.roomId}`).emit("infoBallOnClient",{
+      x:data.x,
+      y:data.y
+    })
+  })
+
   socket.emit("sda", { data: socket.id });
 
   socket.on("disconnect", async (reason) => {
-    if (players.p1 == socket.id) {
-      players.p1 = "";
-    } else if (players.p2 == socket.id) {
-      players.p2 = "";
+    console.log(socket.id);
+    for(let i=0;i<rooms.length;i++){
+      if(rooms[i].p1 == socket.id){
+        rooms.splice(i, 1);
+      }
     }
-
     await socket.leave("room");
 
-    count--;
+    io.to("room").emit("getRooms",rooms)
   });
+
 });
 
 http.listen(port, () => {
