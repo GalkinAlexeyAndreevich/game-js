@@ -1,16 +1,13 @@
 import Player from "./modules/player.js";
 import Ball from "./modules/ball.js";
-import {roomPanel} from "./modules/roomPanel.js";
+import { roomPanel } from "./modules/roomPanel.js";
 import { io } from "https://cdn.socket.io/4.6.1/socket.io.esm.min.js";
 
-
-const gameDiv = document.querySelector(".game")
-gameDiv.style.display = "none"
-const RoomSearch = document.querySelector(".RoomSearch")
+const gameDiv = document.querySelector(".game");
+gameDiv.style.display = "none";
+const RoomSearch = document.querySelector(".RoomSearch");
 console.log(RoomSearch);
-RoomSearch.style.display = "block"
-
-
+RoomSearch.style.display = "block";
 
 const canvas = document.querySelector("#game-field");
 const ctx = canvas.getContext("2d");
@@ -36,73 +33,53 @@ let PlayerInfo2 = {
   canvas: canvas,
 };
 
-let choose;
 
 let player1;
 let player2;
 let ball;
-const socket = io("ws://localhost:8080");
+const socket = io("ws://192.168.226.13:8080");
 
+roomPanel(socket);
 
-
-roomPanel(socket)
-// socket.on("connectToGame", (data) => {
-//   choose = data.yourPlayer;
-//     if (choose == 0) {
-//       throw new Error("room close");
-//     }
-//   //   console.log(data, choose, socket);
-//   if (choose == 1) {
-//     PlayerInfo1.socket = socket;
-//   }
-//   if (choose == 2) {
-//     PlayerInfo2.socket = socket;
-//   }
-// });
 socket.on("startGame", (room) => {
-    player1 = new Player(PlayerInfo1);
-    player2 = new Player(PlayerInfo2);
-    ball = new Ball(canvas);
-    if(room.p1 == socket.id){
-      player1.socket = socket
-    }
-    else if(room.p2 == socket.id){
-      player2.socket = socket
-    }
-    else{
-      alert("Упс, ошибка")
-    }
-    player1.roomId = room.id
-    player2.roomId = room.id
-    ball.socket = socket
-    ball.roomId = room.id
-    ball.idOwner = room.p1
-    console.log(player1);
-    console.log(player2);
-    
-    gameDiv.style.display = "block"
-    RoomSearch.style.display = "none"
-    clear();
-    start();
-    
-    socket.on("infoPlayerOnClient", (data) => {
-        if (data.choose == "p1") {
-          player1.x = data.x;
-          player1.y = data.y;
-        } else if (data.choose == "p2") {
-          player2.x = data.x;
-          player2.y = data.y;
-        }
+  player1 = new Player(PlayerInfo1);
+  player2 = new Player(PlayerInfo2);
+  ball = new Ball(canvas);
+  if (room.p1 == socket.id) {
+    player1.socket = socket;
+  } else if (room.p2 == socket.id) {
+    player2.socket = socket;
+  } else {
+    alert("Упс, ошибка");
+  }
+  player1.roomId = room.id;
+  player2.roomId = room.id;
+  ball.socket = socket;
+  ball.roomId = room.id;
+  ball.idOwner = room.p1;
+  console.log(player1);
+  console.log(player2);
 
-    });
+  gameDiv.style.display = "block";
+  RoomSearch.style.display = "none";
+  clear();
+  start();
+
+  socket.on("infoPlayerOnClient", (data) => {
+    if (data.choose == "p1") {
+      player1.x = data.x;
+      player1.y = data.y;
+    } else if (data.choose == "p2") {
+      player2.x = data.x;
+      player2.y = data.y;
+    }
+  });
 });
 
 socket.on("disconnect", () => {
   console.log("disconnect");
   clear();
 });
-
-
 
 const collision = (player, ball) => {
   // если мяч и игрок соприкоснулись
@@ -117,14 +94,14 @@ const collision = (player, ball) => {
   }
   ball.velocity = -ball.velocity;
   return true;
-}
-const collisionField = (ball)=> {
+};
+const collisionField = (ball) => {
   // если мяч соприкоснулся с полем
   if (ball.y - ball.radius * 2 <= 0 || ball.y >= canvas.height) {
     return true;
   }
   return false;
-}
+};
 let requestId = null;
 
 const clear = () => {
@@ -136,10 +113,9 @@ const clear = () => {
 };
 
 const start = () => {
-
   gameScore();
-  player1.movePlayer()
-  player2.movePlayer()
+  player1.movePlayer();
+  player2.movePlayer();
   // document.body.addEventListener("keydown", (e) => {
   //   if (e.code == "ArrowUp") {
   //     if (choose == 1) {
@@ -181,7 +157,7 @@ const gameScore = () => {
     player1: player1.score,
     player1: player1.score,
   });
-}
+};
 
 const clearCanvas = () => {
   ctx.fillStyle = "black";
@@ -224,7 +200,7 @@ const update = () => {
   //     ball.updateLocation()
   //   })
   // }
-  
+
   // Один из игровок забил
   if (ball.x <= 0) {
     player2.score += 1;
@@ -239,7 +215,7 @@ const update = () => {
     collision(player2, ball) ||
     collisionField(ball)
   ) {
-    // console.log("collide");
+    console.log("collide");
     ball.coef = ball.coef + 1;
     ball.changeDirection();
   }
