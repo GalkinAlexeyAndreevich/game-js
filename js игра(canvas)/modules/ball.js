@@ -66,6 +66,7 @@ export default class Ball {
       this.socket.emit("changeDirectionOnServer", {
         direction: this.direction,
         velocity: this.velocity,
+        coef: this.coef,
         roomId: this.roomId,
         x: this.x,
         y: this.y,
@@ -75,8 +76,9 @@ export default class Ball {
       this.socket.on("changeDirectionOnClient", (data) => {
         this.direction = data.direction;
         this.velocity = data.velocity;
-        this.x = data.x,
-        this.y = data.y
+        this.coef = data.coef;
+        this.x = data.x;
+        this.y = data.y;
       });
     }
   }

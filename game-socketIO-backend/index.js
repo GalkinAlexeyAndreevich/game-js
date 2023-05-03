@@ -32,7 +32,7 @@ io.sockets.on("connection", async (socket) => {
 
   socket.on("addRoom", async () => {
     await socket.join(`room${rooms.length}`);
-    rooms.push({ id: rooms.length, p1: socket.id, close: false });
+    rooms.push({ id: rooms.length, p1: socket.id, close: false,gameEnd:false });
     io.emit("getRooms", rooms);
   });
 
@@ -56,6 +56,7 @@ io.sockets.on("connection", async (socket) => {
     io.to(`room${data.roomId}`).emit("changeDirectionOnClient", {
       direction: data.direction,
       velocity: data.velocity,
+      coef:data.coef,
       x: data.x,
       y: data.y,
     });
@@ -66,13 +67,20 @@ io.sockets.on("connection", async (socket) => {
   socket.on("disconnect", async (reason) => {
     console.log(socket.id);
     for (let i = 0; i < rooms.length; i++) {
-      if (rooms[i].p1 == socket.id) {
+      if (rooms[i].p1 == socket.id || rooms[i].p2 == socket.id) {
+        rooms[i].gameEnd = true
+        socket.to(`room${rooms[i].id}`).emit("gameEndOnClient")
+      }
+      if (rooms[i].p1 == socket.id && !rooms[i].close) {
         rooms.splice(i, 1);
       }
     }
 
     io.emit("getRooms", rooms);
   });
+  socket.on("gameEndOnServer", (data) => {
+    
+  })
 });
 
 http.listen(port, () => {

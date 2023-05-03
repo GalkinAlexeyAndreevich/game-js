@@ -17,7 +17,6 @@ canvas.height = 720;
 let paused = false;
 let paddleSpeed = 15;
 
-let arrSocketData = [];
 let PlayerInfo1 = {
   x: 10,
   y: 300,
@@ -37,7 +36,7 @@ let PlayerInfo2 = {
 let player1;
 let player2;
 let ball;
-const socket = io("ws://192.168.226.13:8080");
+const socket = io("ws://localhost:8080");
 
 roomPanel(socket);
 
@@ -80,6 +79,13 @@ socket.on("disconnect", () => {
   console.log("disconnect");
   clear();
 });
+socket.on("gameEnd", (data) => {
+  console.log("game end");
+  clear();
+  gameDiv.style.display = "none";
+  RoomSearch.style.display = "block";
+  alert("you win")
+})
 
 const collision = (player, ball) => {
   // если мяч и игрок соприкоснулись
@@ -183,23 +189,6 @@ const update = () => {
   player1.updateLocation();
   player2.updateLocation();
   ball.moveBall();
-  // if(socket.id == player1.socket.id){
-  //   ball.moveBall();
-  //   socket.emit("infoBallOnServer",{
-  //     x:ball.x,
-  //     y:ball.y,
-  //     roomId:player1.roomId
-  //   })
-  // }
-  // else{
-  //   console.log("Пришлел мяч");
-  //   socket.on("infoBallOnClient",(data)=>{
-  //     console.log(data);
-  //     ball.x = data.x
-  //     ball.y = data.y
-  //     ball.updateLocation()
-  //   })
-  // }
 
   // Один из игровок забил
   if (ball.x <= 0) {
