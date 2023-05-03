@@ -1,4 +1,3 @@
-import { paddleSpeed } from "./config.js";
 export default class Player {
   constructor({ x, y, socket, numberPlayer, canvas }) {
     this.width = 20;
@@ -15,13 +14,14 @@ export default class Player {
     this.beginY = y;
 
     this.speed = 0;
+    this.paddleSpeed = 15
+
     this.socket = socket;
     this.roomId = -1
     this.numberPlayer = numberPlayer;
     this.ctx = canvas.getContext("2d");
   }
   updateLocation() {
-    // console.log(this.x, this.y);
     this.y = this.y + this.speed;
     if (this.y > this.maxY) this.y = this.maxY;
     if (this.y < this.minY) this.y = this.minY;

@@ -37,3 +37,7 @@ body {
 .addRoom{
     margin-top: 30px;
 }
+.surrender{
+    display: flex;
+    align-items: center;
+}

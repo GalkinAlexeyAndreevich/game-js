@@ -1,10 +1,9 @@
 const canvas = document.querySelector("#game-field");
-const ctx = canvas.getContext("2d");
 canvas.width = 1280;
 canvas.height = 720;
 
+let fps = 60;
 
-let paddleSpeed = 15
 
 let PlayerInfo1 = {
     x: 10,
@@ -23,8 +22,8 @@ let PlayerInfo1 = {
 
 export {
     canvas,
-    ctx,
-    paddleSpeed,
+    fps,
     PlayerInfo1,
     PlayerInfo2
+
 }

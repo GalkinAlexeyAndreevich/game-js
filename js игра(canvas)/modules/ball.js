@@ -31,7 +31,6 @@ export default class Ball {
         roomId: this.roomId,
       });
     } else {
-      console.log("Пришлел мяч");
       this.socket.on("infoBallOnClient", (data) => {
         console.log(data);
         this.x = data.x;
@@ -50,29 +49,26 @@ export default class Ball {
     this.updateLocation();
   }
   changeDirection() {
+    if (this.direction == 0) {
+      this.direction = 5;
+    }
+    this.isNegative = !this.isNegative;
+    if (this.isNegative) {
+      this.direction = this.direction + this.coef / 5;
+      this.direction = -this.direction;
+    } else {
+      this.direction = this.direction - this.coef / 5;
+    }
     if (this.socket.id == this.idOwner) {
-      if (this.direction == 0) {
-        this.direction = 5;
-      }
-      this.isNegative = !this.isNegative;
-      if (this.isNegative) {
-        this.direction = this.direction + this.coef / 5;
-        this.direction = -this.direction;
-      } else {
-        this.direction = this.direction - this.coef / 5;
-      }
-      console.log("client");
-      console.log(this.direction, this.velocity);
       this.socket.emit("changeDirectionOnServer", {
         direction: this.direction,
         velocity: this.velocity,
         coef: this.coef,
         roomId: this.roomId,
         x: this.x,
-        y: this.y,
+        y: this.y
       });
     } else {
-      console.log("player2");
       this.socket.on("changeDirectionOnClient", (data) => {
         this.direction = data.direction;
         this.velocity = data.velocity;

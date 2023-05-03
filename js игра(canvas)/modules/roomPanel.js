@@ -38,7 +38,7 @@ export const roomPanel = (socket) => {
   });
   socket.on("answerOnCheck", (answer) => {
     if (answer) {
-      alert(3333);
+      alert("Вы уже создали комнату, ожидайте ответа");
       return;
     }
     socket.emit("addRoom");

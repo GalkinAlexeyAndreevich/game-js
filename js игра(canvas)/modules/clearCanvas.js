@@ -1,6 +1,6 @@
 import {canvas} from "./config.js"
 export const clearCanvas = () => {
-    let ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.setLineDash([64, 18]);
