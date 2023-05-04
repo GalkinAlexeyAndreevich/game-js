@@ -37,8 +37,8 @@ io.sockets.on("connection", async (socket) => {
       p1: socket.id,
       close: false,
       gameEnd: false,
-      player1Score:0,
-      player2Score:0
+      player1Score: 0,
+      player2Score: 0,
     });
     io.emit("getRooms", rooms);
   });
@@ -69,17 +69,15 @@ io.sockets.on("connection", async (socket) => {
     });
   });
 
-  socket.on("scorePlayerOnServer",(data)=>{
-    rooms[data.roomId][data.whoScore] +=1
-    console.log(rooms[data.roomId]);
+  socket.on("scorePlayerOnServer", (data) => {
+    rooms[data.roomId][data.whoScore] += 1;
     io.to(`room${data.roomId}`).emit("scorePlayerOnClient", {
       score1: rooms[data.roomId].player1Score,
-      score2: rooms[data.roomId].player2Score
+      score2: rooms[data.roomId].player2Score,
     });
   });
 
   socket.on("disconnect", async (reason) => {
-    console.log(socket.id);
     for (let i = 0; i < rooms.length; i++) {
       if (rooms[i].p1 == socket.id || rooms[i].p2 == socket.id) {
         rooms[i].gameEnd = true;
@@ -89,12 +87,9 @@ io.sockets.on("connection", async (socket) => {
         rooms.splice(i, 1);
       }
     }
-    console.log(socket.rooms);
     io.emit("getRooms", rooms);
   });
   socket.on("gameEndOnServer", (roomId) => {
-    console.log(roomId);
-    console.log(rooms[roomId]);
     rooms[roomId].gameEnd = true;
     io.to(`room${roomId}`).emit("gameEndOnClient", socket.id);
   });

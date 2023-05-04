@@ -54,7 +54,7 @@ socket.on("startGame", (room) => {
       player2.x = data.x;
       player2.y = data.y;
     }
-  })
+  });
   socket.on("changeDirectionOnClient", (data) => {
     ball.direction = data.direction;
     ball.velocity = data.velocity;
@@ -62,13 +62,10 @@ socket.on("startGame", (room) => {
     ball.x = data.x;
     ball.y = data.y;
   });
-  socket.on("scorePlayerOnClient",(data)=>{
-    player1.score = data.score1
-    player2.score = data.score2
-    updateScore()
-    player1.beginPosition();
-    player2.beginPosition();
-    ball.beginPosition();
+  socket.on("scorePlayerOnClient", (data) => {
+    player1.score = data.score1;
+    player2.score = data.score2;
+    updateScore();
   });
 });
 
@@ -106,26 +103,29 @@ const start = () => {
   requestId = requestAnimationFrame(update);
 };
 const gameScore = () => {
-  let player
+  let player;
   // Один из игровок забил
-  if (ball.x <= 0 && player1.socket !=-1) {
+  if (ball.x <= 0 && player1.socket != -1) {
     player = "player2Score";
   } else if (ball.x >= canvas.width && player2.socket != -1) {
     player = "player1Score";
   }
-  if(player){
+  if (ball.x <= 0 || ball.x >= canvas.width) {
+    player1.beginPosition();
+    player2.beginPosition();
+    ball.beginPosition();
+  }
+  if (player) {
     socket.emit("scorePlayerOnServer", {
       whoScore: player,
       roomId: player1.roomId,
     });
   }
-
 };
-const updateScore = ()=>{
-   const div = document.querySelector(".gameScore");
-   div.textContent = player1.score + ":" + player2.score;
-}
-
+const updateScore = () => {
+  const div = document.querySelector(".gameScore");
+  div.textContent = player1.score + ":" + player2.score;
+};
 
 let now;
 let then = Date.now();
