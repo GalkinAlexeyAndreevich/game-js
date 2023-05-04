@@ -1,13 +1,12 @@
 import { io } from "https://cdn.socket.io/4.6.1/socket.io.esm.min.js";
-import { canvas, PlayerInfo1,PlayerInfo2,fps } from "./modules/config.js";
+import { canvas, PlayerInfo1, PlayerInfo2, fps } from "./modules/config.js";
 
 import Player from "./modules/player.js";
 import Ball from "./modules/ball.js";
 
 import { clearCanvas } from "./modules/clearCanvas.js";
-import { collision,collisionField } from "./modules/collision.js";
-import {roomPanel}  from "./modules/roomPanel.js";
-
+import { collision, collisionField } from "./modules/collision.js";
+import { roomPanel } from "./modules/roomPanel.js";
 
 const gameDiv = document.querySelector(".game");
 gameDiv.style.display = "none";
@@ -18,7 +17,7 @@ RoomSearch.style.display = "block";
 let player1;
 let player2;
 let ball;
-const socket = io("ws://localhost:8080");
+const socket = io("ws://192.168.226.13:8080");
 
 roomPanel(socket);
 
@@ -55,28 +54,41 @@ socket.on("startGame", (room) => {
       player2.x = data.x;
       player2.y = data.y;
     }
+  })
+  socket.on("changeDirectionOnClient", (data) => {
+    ball.direction = data.direction;
+    ball.velocity = data.velocity;
+    ball.coef = data.coef;
+    ball.x = data.x;
+    ball.y = data.y;
+  });
+  socket.on("scorePlayerOnClient",(data)=>{
+    player1.score = data.score1
+    player2.score = data.score2
+    updateScore()
+    player1.beginPosition();
+    player2.beginPosition();
+    ball.beginPosition();
   });
 });
 
 socket.on("disconnect", () => {
   clear();
 });
-const surrender = gameDiv.querySelector(".surrender")
-surrender.addEventListener("click",()=>{
-  socket.emit("gameEndOnServer",ball.roomId)
-})
+const surrender = gameDiv.querySelector(".surrender");
+surrender.addEventListener("click", () => {
+  socket.emit("gameEndOnServer", ball.roomId);
+});
 socket.on("gameEndOnClient", (data) => {
   clear();
   gameDiv.style.display = "none";
   RoomSearch.style.display = "block";
-  if(data == socket.id){
-    alert("Вы проиграли")
+  if (data == socket.id) {
+    alert("Вы проиграли");
+  } else {
+    alert("Вы выиграли");
   }
-  else{
-    alert("Вы выиграли")
-  }
-})
-
+});
 
 let requestId = null;
 const clear = () => {
@@ -90,68 +102,66 @@ const start = () => {
   gameScore();
   player1.movePlayer();
   player2.movePlayer();
-
+  updateScore();
   requestId = requestAnimationFrame(update);
 };
 const gameScore = () => {
-  const div = document.querySelector(".gameScore");
-  div.textContent = player1.score + ":" + player2.score;
-  player1.beginPosition();
-  player2.beginPosition();
-  ball.beginPosition();
-  socket.emit("score player", {
-    player1: player1.score,
-    player1: player1.score,
-  });
+  let player
+  // Один из игровок забил
+  if (ball.x <= 0 && player1.socket !=-1) {
+    player = "player2Score";
+  } else if (ball.x >= canvas.width && player2.socket != -1) {
+    player = "player1Score";
+  }
+  if(player){
+    socket.emit("scorePlayerOnServer", {
+      whoScore: player,
+      roomId: player1.roomId,
+    });
+  }
+
 };
+const updateScore = ()=>{
+   const div = document.querySelector(".gameScore");
+   div.textContent = player1.score + ":" + player2.score;
+}
 
 
 let now;
 let then = Date.now();
-let interval = 1000/fps;
-let delta
-
+let interval = 1000 / fps;
+let delta;
 
 const update = () => {
-  // бесконечный цикл обновления объектов и их коллизия
-
-  requestId = requestAnimationFrame(update);
   // Лок фпс
   now = Date.now();
   delta = now - then;
   if (delta > interval) {
     then = now - (delta % interval);
-  }
-  else{
-    return
-  }    
-  // Очищаем canvas
-  clearCanvas();
-  // Размещаем игроков и мяч
-  player1.updateLocation();
-  player2.updateLocation();
-  ball.moveBall();
 
-  // Один из игровок забил
-  if (ball.x <= 0) {
-    player2.score += 1;
+    // Очищаем canvas
+    clearCanvas();
+    // Размещаем игроков и мяч
+    player1.updateLocation();
+    player2.updateLocation();
+    ball.moveBall();
     gameScore();
-  } else if (ball.x >= canvas.width) {
-    player1.score += 1;
-    gameScore();
-  }
-  //Чем больше мяч касается со стенками, тем выше его скорость
-  if(collisionField(ball)){
-    ball.coef = ball.coef + 1;
-  }
-  // Коллизия игрока и мяча, мяча и поля. 
-  if (
-    collision(player1, ball) ||
-    collision(player2, ball) ||
-    collisionField(ball)
-  ) {
-    console.log("collide");
-    ball.changeDirection();
+
+    //Чем больше мяч касается со стенками, тем выше его скорость
+    if (collisionField(ball)) {
+      ball.coef = ball.coef + 1;
+    }
+    // Коллизия игрока и мяча, мяча и поля.
+    if (
+      collision(player1, ball) ||
+      collision(player2, ball) ||
+      collisionField(ball)
+    ) {
+      console.log("collide");
+      ball.changeDirection();
+    }
   }
 
+  // бесконечный цикл обновления объектов и их коллизия
+  requestId = requestAnimationFrame(update);
 };

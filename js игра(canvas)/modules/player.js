@@ -49,9 +49,9 @@ export default class Player {
         return
       }
       if (e.code == "ArrowUp") {
-          this.speed = -paddleSpeed;
+          this.speed = -this.paddleSpeed;
       } else if (e.code == "ArrowDown") {
-          this.speed = paddleSpeed;
+          this.speed = this.paddleSpeed;
       }
     });
 

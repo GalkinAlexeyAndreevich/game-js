@@ -8,8 +8,8 @@ export default class Ball {
     this.minX = 0;
     this.minY = 30;
     this.colorObj = "white";
-    this.velocity = -10;
-    this.direction = 0;
+    this.velocity = -10; // скорость по x
+    this.direction = 0; // скорость по y
     this.isNegative = false;
     this.coef = 0;
     this.ctx = canvas.getContext("2d");
@@ -19,24 +19,12 @@ export default class Ball {
 
     this.idOwner = "";
   }
+
   updateLocation() {
     if (this.x > this.maxX) this.x = this.maxX;
     if (this.x < this.minX) this.x = this.minX;
     if (this.y > this.maxY) this.y = this.maxY;
     if (this.y < this.minY) this.y = this.minY;
-    if (this.idOwner == this.socket.id) {
-      this.socket.emit("infoBallOnServer", {
-        x: this.x,
-        y: this.y,
-        roomId: this.roomId,
-      });
-    } else {
-      this.socket.on("infoBallOnClient", (data) => {
-        console.log(data);
-        this.x = data.x;
-        this.y = data.y;
-      });
-    }
     this.ctx.beginPath();
     this.ctx.fillStyle = this.colorObj;
     this.ctx.arc(this.x, this.y - this.radius, this.radius, 0, Math.PI * 2);
@@ -54,10 +42,10 @@ export default class Ball {
     }
     this.isNegative = !this.isNegative;
     if (this.isNegative) {
-      this.direction = this.direction + this.coef / 5;
+      this.direction = this.direction + this.coef;
       this.direction = -this.direction;
     } else {
-      this.direction = this.direction - this.coef / 5;
+      this.direction = this.direction - this.coef;
     }
     if (this.socket.id == this.idOwner) {
       this.socket.emit("changeDirectionOnServer", {
@@ -68,15 +56,7 @@ export default class Ball {
         x: this.x,
         y: this.y
       });
-    } else {
-      this.socket.on("changeDirectionOnClient", (data) => {
-        this.direction = data.direction;
-        this.velocity = data.velocity;
-        this.coef = data.coef;
-        this.x = data.x;
-        this.y = data.y;
-      });
-    }
+    } 
   }
   beginPosition() {
     this.x = 500;
