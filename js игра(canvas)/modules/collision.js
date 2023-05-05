@@ -1,16 +1,21 @@
 import { canvas } from "./config.js";
+let timer = new Date();
 export const collision = (player, ball) => {
   // если мяч и игрок соприкоснулись
   if (player.x + player.width < ball.x || player.x > ball.x + ball.radius)
     return false;
-  if (player.y + player.height < ball.y || player.y > ball.y + ball.radius)
+  if (player.y + player.height < ball.y || player.y+10 > ball.y + ball.radius)
     return false;
-  
-  // Увеличение вертикальной скорости мяча, и изменение его направления
+  let now = new Date();
+  // if (now - timer <= 20) {
+  //   timer = now;
+  //   return false;
+  // }
   if (ball.velocity >= 0) {
-    ball.velocity = ball.velocity + ball.coef / 5;
+    // Увеличение вертикальной скорости мяча, и изменение его направления
+    ball.velocity = ball.velocity >= 12 ? 12 : ball.velocity + ball.coef;
   } else {
-    ball.velocity = ball.velocity - ball.coef / 5;
+    ball.velocity = ball.velocity <= -12 ? -12 : ball.velocity - ball.coef;
   }
   ball.velocity = -ball.velocity;
   return true;

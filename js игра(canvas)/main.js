@@ -149,7 +149,7 @@ const update = () => {
 
     //Чем больше мяч касается со стенками, тем выше его скорость
     if (collisionField(ball)) {
-      ball.coef = ball.coef + 1;
+      ball.coef = ball.coef >= 4 ? 4 : ball.coef + 0.5;
     }
     // Коллизия игрока и мяча, мяча и поля.
     if (

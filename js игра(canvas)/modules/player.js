@@ -14,7 +14,7 @@ export default class Player {
     this.beginY = y;
 
     this.speed = 0;
-    this.paddleSpeed = 15
+    this.paddleSpeed = 10
 
     this.socket = socket;
     this.roomId = -1

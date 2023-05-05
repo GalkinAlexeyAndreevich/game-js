@@ -8,7 +8,7 @@ export default class Ball {
     this.minX = 0;
     this.minY = 30;
     this.colorObj = "white";
-    this.velocity = -10; // скорость по x
+    this.velocity = -8; // скорость по x
     this.direction = 0; // скорость по y
     this.isNegative = false;
     this.coef = 0;
@@ -38,14 +38,16 @@ export default class Ball {
   }
   changeDirection() {
     if (this.direction == 0) {
-      this.direction = 5;
+      this.direction = 2;
     }
     this.isNegative = !this.isNegative;
     if (this.isNegative) {
       this.direction = this.direction + this.coef;
+      this.direction >= 6 ? (this.direction = 6) : this.velocity;
       this.direction = -this.direction;
     } else {
       this.direction = this.direction - this.coef;
+      this.direction <= -6 ? (this.direction = -6) : this.velocity;
     }
     if (this.socket.id == this.idOwner) {
       this.socket.emit("changeDirectionOnServer", {
@@ -54,16 +56,16 @@ export default class Ball {
         coef: this.coef,
         roomId: this.roomId,
         x: this.x,
-        y: this.y
+        y: this.y,
       });
-    } 
+    }
   }
   beginPosition() {
     this.x = 500;
     this.y = 400;
     this.direction = 0;
     this.coef = 0;
-    this.velocity = -10;
+    this.velocity = -8;
     this.updateLocation();
   }
 }
