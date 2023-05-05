@@ -27,8 +27,10 @@ export default class Ball {
     if (this.y < this.minY) this.y = this.minY;
     this.ctx.beginPath();
     this.ctx.fillStyle = this.colorObj;
-    this.ctx.arc(this.x, this.y - this.radius, this.radius, 0, Math.PI * 2);
+    this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     this.ctx.fill();
+
+
   }
   moveBall() {
     this.x = this.x + this.velocity;
@@ -43,11 +45,11 @@ export default class Ball {
     this.isNegative = !this.isNegative;
     if (this.isNegative) {
       this.direction = this.direction + this.coef;
-      this.direction >= 6 ? (this.direction = 6) : this.velocity;
+      this.direction >= 8 ? (this.direction = 8) : this.direction;
       this.direction = -this.direction;
     } else {
       this.direction = this.direction - this.coef;
-      this.direction <= -6 ? (this.direction = -6) : this.velocity;
+      this.direction <= -8 ? (this.direction = -8) : this.direction;
     }
     if (this.socket.id == this.idOwner) {
       this.socket.emit("changeDirectionOnServer", {

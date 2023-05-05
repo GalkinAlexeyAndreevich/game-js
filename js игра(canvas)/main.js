@@ -70,6 +70,7 @@ socket.on("startGame", (room) => {
 });
 
 socket.on("disconnect", () => {
+  socket.removeAllListeners();
   clear();
 });
 const surrender = gameDiv.querySelector(".surrender");
@@ -149,14 +150,18 @@ const update = () => {
 
     //Чем больше мяч касается со стенками, тем выше его скорость
     if (collisionField(ball)) {
-      ball.coef = ball.coef >= 4 ? 4 : ball.coef + 0.5;
+      ball.coef = ball.coef >= 6 ? 6 : ball.coef + 1;
+      ball.changeDirection();
     }
     // Коллизия игрока и мяча, мяча и поля.
-    if (
-      collision(player1, ball) ||
-      collision(player2, ball) ||
-      collisionField(ball)
-    ) {
+    if (collision(player1, ball) || collision(player2, ball)) {
+      if (ball.velocity >= 0) {
+        // Увеличение вертикальной скорости мяча, и изменение его направления
+        ball.velocity = ball.velocity >= 14 ? 14 : ball.velocity + ball.coef;
+      } else {
+        ball.velocity = ball.velocity <= -14 ? -14 : ball.velocity - ball.coef;
+      }
+      ball.velocity = -ball.velocity;
       console.log("collide");
       ball.changeDirection();
     }
