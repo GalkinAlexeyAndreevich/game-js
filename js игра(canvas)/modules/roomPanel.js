@@ -1,4 +1,5 @@
 const RoomSearch = document.querySelector(".RoomSearch");
+
 export const roomPanel = (socket) => {
   console.log(socket);
   const roomsDiv = RoomSearch.querySelector(".rooms");
@@ -32,10 +33,12 @@ export const roomPanel = (socket) => {
     }
   });
   const addRoom = RoomSearch.querySelector(".addRoom");
-  addRoom.addEventListener("click", () => {
+  const addRoomHandler = () => {
     console.log("Комната добавлена");
     socket.emit("checkInRoom");
-  });
+  };
+  // addRoom.removeEventListener("click",addRoomHandler)
+  addRoom.addEventListener("click", addRoomHandler);
   socket.on("answerOnCheck", (answer) => {
     if (answer) {
       alert("Вы уже создали комнату, ожидайте ответа");

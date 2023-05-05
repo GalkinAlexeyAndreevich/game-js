@@ -45,7 +45,10 @@ socket.on("startGame", (room) => {
   RoomSearch.style.display = "none";
   clear();
   start();
-
+  socket.removeAllListeners("infoPlayerOnClient");
+  socket.removeAllListeners("changeDirectionOnClient");
+  socket.removeAllListeners("scorePlayerOnClient");
+  socket.removeAllListeners("gameEndOnClient");
   socket.on("infoPlayerOnClient", (data) => {
     if (data.choose == "p1") {
       player1.x = data.x;
@@ -67,25 +70,27 @@ socket.on("startGame", (room) => {
     player2.score = data.score2;
     updateScore();
   });
+  socket.on("gameEndOnClient", (data) => {
+    clear();
+    gameDiv.style.display = "none";
+    RoomSearch.style.display = "block";
+
+    // roomPanel(socket);
+    if (data == socket.id) {
+      alert("Вы проиграли");
+    } else {
+      alert("Вы выиграли");
+    }
+  });
+
 });
 
 socket.on("disconnect", () => {
-  socket.removeAllListeners();
   clear();
 });
 const surrender = gameDiv.querySelector(".surrender");
 surrender.addEventListener("click", () => {
   socket.emit("gameEndOnServer", ball.roomId);
-});
-socket.on("gameEndOnClient", (data) => {
-  clear();
-  gameDiv.style.display = "none";
-  RoomSearch.style.display = "block";
-  if (data == socket.id) {
-    alert("Вы проиграли");
-  } else {
-    alert("Вы выиграли");
-  }
 });
 
 let requestId = null;

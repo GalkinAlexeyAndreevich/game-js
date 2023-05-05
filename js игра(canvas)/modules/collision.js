@@ -1,7 +1,6 @@
 import { canvas } from "./config.js";
 let timer = new Date();
 let dif
-let first =false
 export const collision = (player, ball) => {
   // если мяч и игрок соприкоснулись
 
@@ -16,16 +15,18 @@ export const collision = (player, ball) => {
   }
   let now = new Date();
   dif = now - timer;
-  timer = now;
+  
   console.log(dif);
-  if (dif <= 30) {
-    first = true
-    if(first){
-      first = false
-      return false;
-    }
-    
+  if (dif <= 100) {
+    // if(player.numberPlayer =="p1"){
+    //   player.x +=10
+    // }
+    // else{
+    //   player.x -=10
+    // }
+    return false;   
   }
+  timer = now;
   if (distX <= player.width / 2) {
     return true;
   }

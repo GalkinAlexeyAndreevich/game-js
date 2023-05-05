@@ -81,6 +81,7 @@ io.sockets.on("connection", async (socket) => {
     for (let i = 0; i < rooms.length; i++) {
       if (rooms[i].p1 == socket.id || rooms[i].p2 == socket.id) {
         rooms[i].gameEnd = true;
+        rooms[i].close = true;
         socket.to(`room${i}`).emit("gameEndOnClient", socket.id);
       }
       if (rooms[i].p1 == socket.id && !rooms[i].close) {
@@ -91,6 +92,9 @@ io.sockets.on("connection", async (socket) => {
   });
   socket.on("gameEndOnServer", (roomId) => {
     rooms[roomId].gameEnd = true;
+    rooms[roomId].close = true;
+    console.log(rooms[roomId]);
+    io.emit("getRooms",rooms);
     io.to(`room${roomId}`).emit("gameEndOnClient", socket.id);
   });
 });
