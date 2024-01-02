@@ -4,7 +4,6 @@ canvas.height = 720;
 
 let fps = 60;
 
-
 let PlayerInfo1 = {
     x: 10,
     y: 300,
@@ -25,5 +24,4 @@ export {
     fps,
     PlayerInfo1,
     PlayerInfo2
-
 }

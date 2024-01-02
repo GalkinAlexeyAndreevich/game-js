@@ -11,12 +11,6 @@ body {
 }
 
 
-
-/* .ball{
-    position: absolute;
-    border-radius: 50%;
-} */
-
 #game-field{
     position: relative;
     top: 150px;
@@ -27,13 +21,8 @@ body {
     font-size: 40px;
     color: white;
     left: 28.7%;
-    /* left: 50%; */
-    /* right: -50%; */
 }
-/* .RoomSearch{
-    display: grid;
-    justify-content: center;
-} */
+
 .addRoom{
     margin-top: 30px;
 }

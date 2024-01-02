@@ -18,12 +18,6 @@ export const collision = (player, ball) => {
   
   console.log(dif);
   if (dif <= 100) {
-    // if(player.numberPlayer =="p1"){
-    //   player.x +=10
-    // }
-    // else{
-    //   player.x -=10
-    // }
     return false;   
   }
   timer = now;

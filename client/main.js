@@ -17,7 +17,7 @@ RoomSearch.style.display = "block";
 let player1;
 let player2;
 let ball;
-const socket = io("ws://192.168.226.13:8080");
+const socket = io("ws://localhost:8080"); 
 
 roomPanel(socket);
 
@@ -75,7 +75,6 @@ socket.on("startGame", (room) => {
     gameDiv.style.display = "none";
     RoomSearch.style.display = "block";
 
-    // roomPanel(socket);
     if (data == socket.id) {
       alert("Вы проиграли");
     } else {
@@ -144,7 +143,6 @@ const update = () => {
   delta = now - then;
   if (delta > interval) {
     then = now - (delta % interval);
-
     // Очищаем canvas
     clearCanvas();
     // Размещаем игроков и мяч

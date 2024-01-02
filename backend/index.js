@@ -102,10 +102,3 @@ io.sockets.on("connection", async (socket) => {
 http.listen(port, () => {
   console.log(`connect on port ${port}`);
 });
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
-});
-app.get("/", (req, res) => {
-  console.log("method get");
-  res.send("work get");
-});
